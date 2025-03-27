@@ -1,0 +1,124 @@
+import java.util.ArrayList;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+
+// Classe Produto
+class Produto {
+    int codigoProduto;
+    String nomeProduto;
+    int quantidadeProduto;
+    double valorProduto;
+
+    Produto(int codigoProduto, String nomeProduto, int quantidadeProduto, double valorProduto) {
+        this.codigoProduto = codigoProduto;
+        this.nomeProduto = nomeProduto;
+        this.quantidadeProduto = quantidadeProduto;
+        this.valorProduto = valorProduto;
+    }
+
+    double getSubTotal() {
+        return this.quantidadeProduto * this.valorProduto;
+    }
+}
+
+// Classe Cliente
+class Cliente {
+    int codigoCliente;
+    String nomeCliente;
+    Date dataCadastroCliente;
+    String cpfCnpjCliente;
+
+    Cliente(int codigoCliente, String nomeCliente, String cpfCnpjCliente) {
+        this.codigoCliente = codigoCliente;
+        this.nomeCliente = nomeCliente;
+        this.dataCadastroCliente = new Date();  // Data atual
+        this.cpfCnpjCliente = cpfCnpjCliente;
+    }
+
+    String getDataCadastro() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        return sdf.format(this.dataCadastroCliente);
+    }
+}
+
+// Classe Loja
+class Loja {
+    int codigoLoja;
+    String nomeLoja;
+    String cnpjLoja;
+    String razaoSocialLoja;
+    String enderecoLoja;
+
+    Loja(int codigoLoja, String nomeLoja, String cnpjLoja, String razaoSocialLoja, String enderecoLoja) {
+        this.codigoLoja = codigoLoja;
+        this.nomeLoja = nomeLoja;
+        this.cnpjLoja = cnpjLoja;
+        this.razaoSocialLoja = razaoSocialLoja;
+        this.enderecoLoja = enderecoLoja;
+    }
+}
+
+// Classe Caixa 
+class Caixa {
+    Loja loja;
+    Cliente cliente;
+    ArrayList<Produto> itens;
+
+    Caixa(Loja loja, Cliente cliente) {
+        this.loja = loja;
+        this.cliente = cliente;
+        this.itens = new ArrayList<>();
+    }
+
+    void adicionarProduto(Produto produto) {
+        this.itens.add(produto);
+    }
+
+    double calcularTotal() {
+        double total = 0;
+        for (Produto produto : itens) {
+            total += produto.getSubTotal();
+        }
+        return total;
+    }
+
+    void gerarCupomFiscal() {
+        System.out.println("=== Cupom Fiscal ===");
+        System.out.println("Loja: " + loja.nomeLoja);
+        System.out.println("CNPJ: " + loja.cnpjLoja);
+        System.out.println("Razão Social: " + loja.razaoSocialLoja);
+        System.out.println("Endereço: " + loja.enderecoLoja);
+        System.out.println("Cliente: " + cliente.nomeCliente);
+        System.out.println("CPF/CNPJ: " + cliente.cpfCnpjCliente);
+        System.out.println("Data Cadastro: " + cliente.getDataCadastro());
+        System.out.println("\nItens:");
+        double total = 0;
+        for (Produto produto : itens) {
+            double subTotal = produto.getSubTotal();
+            System.out.println(produto.nomeProduto + " - Quantidade: " + produto.quantidadeProduto + " - R$ " + produto.valorProduto + " - Subtotal: R$ " + subTotal);
+            total += subTotal;
+        }
+        System.out.println("\nTotal de Itens: " + itens.size());
+        System.out.println("Valor Total: R$ " + total);
+        System.out.println("====================");
+    }
+}
+
+public class Supermercado {
+    public static void main(String[] args) {
+        // Criando os objetos para a Loja e Cliente
+        Loja loja = new Loja(1, "Supermercado Eldorado", "12.345.678/0001-99", "Supermercado Eldorado Caixa", "Rua Luiz Rocha, 1222");
+        Cliente cliente = new Cliente(1, "Nicolas Pereira", "123.456.789-00");
+
+        // Objeto Caixa associado a loja e cliente
+        Caixa caixa = new Caixa(loja, cliente);
+
+        // Adicionando produtos ao caixa
+        caixa.adicionarProduto(new Produto(101, "Arroz Sepe", 2, 15.90));
+        caixa.adicionarProduto(new Produto(102, "Feijão Carioca", 1, 8.50));
+        caixa.adicionarProduto(new Produto(103, "Batata Doce", 3, 6.40));
+
+        // Gerando o cupom fiscal
+        caixa.gerarCupomFiscal();
+    }
+}
